@@ -15,6 +15,21 @@
 | `MetricsLogger` | Aggregates per-step data (reward, regret, action counts) and writes CSV/Parquet artifacts for later analysis.|
 | `Plotter` | Loads saved metrics and renders standard figures with confidence intervals.|
 
+### Dependency Flow
+![Dependency Flow](dependency_flow.svg)
+```mermaid
+flowchart LR
+    Config["Experiment Config"] --> Experiment
+    Experiment --> Agent
+    Experiment --> BanditEnv
+    Experiment --> MetricsLogger
+    BanditEnv --> BanditArm
+    Agent --> BanditEnv
+    Agent --> MetricsLogger
+    MetricsLogger --> Plotter
+    Plotter --> Reports["Reports / Figures"]
+```
+
 ## Configuration
 - Represent experiment settings with a structured config object (dataclass or YAML): number of arms, reward distribution specs, horizon, number of runs, random seeds, agent parameters (e.g., ε initial/decay, optimism value, UCB confidence `c`, Beta priors).
 - Allow batch sweeps via an iterable of configs so you can compare agents or hyperparameters in one CLI invocation.
