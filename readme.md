@@ -12,6 +12,7 @@ Repo for implementing reinforcement learning (RL) algorithms from scratch. The g
 
 | Track | Candidate Algorithms | Focus |
 | --- | --- | --- |
+| Multi-armed bandits | ε-greedy, UCB1/2, Thompson sampling, gradient bandits | Fast iteration on exploration vs. exploitation strategies. |
 | Classic control | Tabular value iteration, policy iteration, Monte Carlo control, SARSA/Q-learning | Gymnasium-style toy problems for clarity. |
 | Policy gradient | REINFORCE, baseline variants, natural policy gradient | Keep derivations alongside code comments to show gradient logic. |
 | Deep RL | DQN (and extensions), Actor-Critic, A2C/A3C, PPO | Start from minimal MLPs; add replay buffers, target nets, and advantage estimates incrementally. |
@@ -32,6 +33,7 @@ Progress can happen in any order; correctness and clear explanations beat sheer 
 - Spinning Up in Deep RL (OpenAI) – practical guide for actor-critic, PPO, and TRPO implementations.
 - DQN Nature Paper (Mnih et al., 2015) – reference for replay buffers, target networks, and stability tricks.
 - PPO Paper (Schulman et al., 2017) – canonical objective and clipping rationale for modern policy optimization.
+- Lattimore & Szepesvári, *Bandit Algorithms* – comprehensive treatment of multi-armed bandit theory and algorithms.
 - CleanRL project write-ups – sanity checks for learning curves and implementation gotchas.
 
 Each algorithm directory should link back to the specific resource(s) it follows most closely.
