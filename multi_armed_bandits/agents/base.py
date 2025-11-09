@@ -41,6 +41,8 @@ class Agent(ABC):
         Defines what the agent should do at the start state.
         And output and action according to its policy.
 
+        There will be no update here, because the agent has not taken any action earlier
+        
         It will also set the last state and last action
         '''
         raise NotImplementedError

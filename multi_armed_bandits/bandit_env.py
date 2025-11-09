@@ -62,8 +62,7 @@ class BanditEnv:
 
 
         # Saving the plot, if you want to show the plot change the below line to plt.show()
-        plt.show()
-
+        plt.savefig(f"Reward-Distribution-{self.k}-arms.png")
 if __name__ == '__main__':
     BE = BanditEnv(10)
     
