@@ -15,18 +15,25 @@ class BanditEnv:
         return np.random.normal(mean, var)
 
     def pull_arm(self, arm_index):
-        return np.random.normal(self.sample_reward(self.arms[arm_index], 1))
-
-    def plot_all(self, num_points = 10):
+        return np.random.normal(self.arms[arm_index], 1)
+    
+    def get_distributions(self, num_points = 10):
         data_points = [list() for _ in range(self.k)]
         
         for i in range(self.k):
             for point_num in range(num_points):
                 data_points[i].append(self.pull_arm(i))
+        
+        return data_points
 
+    def plot_all(self, num_points = 10):
+        
+        data_points = self.get_distributions(num_points)
 
         fig, ax = plt.subplots(figsize=(10, 6))
         
+        violin_width = 0.6
+
         # Plots the raw distributions
         ax.violinplot(
             data_points,
@@ -34,7 +41,7 @@ class BanditEnv:
             showmeans=False,
             showmedians=False,
             showextrema=False,
-            widths=0.8
+            widths=violin_width
         )
 
         ## Now we need to beautify it
@@ -46,6 +53,15 @@ class BanditEnv:
         plt.ylabel("Reward Distribution")
         plt.xlabel("Action/Arm Number (Index/Position)")
 
+        # 0 reference line
+        ax.axhline(y = 0, color='gray', linestyle='--', linewidth=1)
+
+        # Showing information about variance in each of the distribution plot
+        for key, val in self.arms.items():
+            ax.hlines(val, key+1-violin_width/2, key+1+violin_width/2, colors='black', linewidth=1.2)
+
+
+        # Saving the plot, if you want to show the plot change the below line to plt.show()
         plt.show()
 
 if __name__ == '__main__':
