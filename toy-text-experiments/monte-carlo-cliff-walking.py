@@ -1,7 +1,5 @@
 import gymnasium as gym
-from rl_from_scratch.agents.sarsa import SARSA
-from rl_from_scratch.agents.expected_sarsa import ExpectedSARSA
-from rl_from_scratch.agents.q_learning import QLearning
+from rl_from_scratch.agents.monte_carlo import MonteCarlo
 import numpy as np
 
 '''
@@ -20,11 +18,11 @@ config = {
     'initial_value': 0.0,
     'seed': 47,
     'eps': 1.0,          
-    'lr': 1e-2,         
-    'discount': 0.99       
+    'lr': 1e-2,          
+    'discount': 0.99        
 }
 
-agent = QLearning(num_states=num_states,
+agent = MonteCarlo(num_states=num_states,
               num_actions=num_actions,
               config=config)
 
@@ -34,32 +32,37 @@ def train(agent, env, epochs):
 
     for epoch in range(epochs):
         # It's episodic
-        start_state, prob_dict = env.reset()
-        selected_action = agent.start(start_state)
+        state, prob_dict = env.reset()
 
         terminated = False
         truncated = False
 
         reward = 0
         rewards_this_epoch = []
+        episodes = []
+        
         while not terminated and not truncated:
-            state, reward, terminated, truncated, _ = env.step(selected_action)
+            selected_action = agent.policy(state)
+            next_state, reward, terminated, truncated, _ = env.step(selected_action)
+
+            episodes.append((state, selected_action, reward)) 
+
             reward_trajectory.append(reward)
             rewards_this_epoch.append(reward)
+
             if terminated or truncated:
                 break
-            selected_action = agent.step(state, reward)
-            # simple epsilon decay and lr decay
+            # simple epsilon decay
             agent.config['eps'] = max(0.05, agent.config['eps'] * 0.9995)
-
+            state = next_state
+        agent.step(episodes)
         if rewards_this_epoch:
             sum_reward = sum(rewards_this_epoch)
         else:
             sum_reward = 0
-        if epoch % (epochs//10) == 0:
+        if epoch % (epochs//100) == 0:
             print(f"epoch : {epoch}, reward obtained this epoch {sum_reward}")
 
-        agent.end(reward)
         
     return reward_trajectory
 
@@ -80,6 +83,7 @@ def visualize(agent):
         if terminated or truncated:
             break
         selected_action = agent.policy(state)
+        iterations += 1
     
     print(f"The total reward obtained in the visualization step is {sum(reward_trajectory)}")
     return reward_trajectory
